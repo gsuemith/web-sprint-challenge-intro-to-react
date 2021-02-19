@@ -16,15 +16,19 @@ const CharacterCard = styled.div`
     &:hover {
         margin: 0;
         padding: 3em;
+        background: rgba(0,0,0,.5);
     }
 
-    & h4 {
+    & h3, h2 {
         cursor: pointer;
-        padding: 1em;
         transition: .4s ease-in-out;
     }
+
+    & h3 {
+        padding: 1em;
+    }
     
-    & h4:hover {
+    & h3:hover {
         background: black;
     }
 `
@@ -35,7 +39,6 @@ const InfoCard = styled.div`
 
 const Character = ({ character, movies}) => {
     const { name, homeworld, birth_year, starships, vehicles } = character
-    
     // Retreive Home World name
     const [homeWorld, setHomeWorld] = useState('A Galaxy Far, Far Away')
     useEffect(() => {
@@ -46,35 +49,22 @@ const Character = ({ character, movies}) => {
             .catch(err => console.log("Home World Error:", err))
     }, [homeworld])
 
-    // Retrieve starship and vehicle names
-    const [rides, setRides] = useState([])
-    useEffect(() => {
-        let ridePromises = [];
-        // Collect multiple promises for each ride url
-        Promise.all(
-            [...starships, ...vehicles].map(ride => (
-                axios.get(ride)
-                .then(res => (
-                    ridePromises.push(res.data.name)
-                ))
-                .catch(err => (
-                    console.log("Unable to retrieve ride", err)
-                ))
-            ))
-        ) // Once complete, update state
-        .then(() => setRides(ridePromises))
-    }, [starships, vehicles])
-
     // Section visibility
+    const [bioVisible, toggleBio] = useState(false)
     const [moviesVisible, toggleMovies] = useState(false)
     const [ridesVisible, toggleRides] = useState(false)
-    const [bioVisible, toggleBio] = useState(false)
 
     return (
         <CharacterCard>
-            <h2>{name}</h2>
+            <h2 onClick={e => {
+                toggleBio(true);
+                toggleMovies(true);
+                toggleRides(true);
+            }}>
+                {name}
+            </h2>
             <InfoCard>
-                <h4 onClick={e => toggleBio(!bioVisible)}>Bio:</h4>
+                <h3 onClick={e => toggleBio(!bioVisible)}>Bio:</h3>
                 {
                     bioVisible && <div className="Bio">
                         <p>Born in <strong>{birth_year}</strong></p>
@@ -82,10 +72,10 @@ const Character = ({ character, movies}) => {
                     </div>
                 }
 
-                <h4 onClick={e => toggleMovies(!moviesVisible)}>Appears in: </h4>
+                <h3 onClick={e => toggleMovies(!moviesVisible)}>Appears in: </h3>
                 {moviesVisible && <Movies movies={movies} movieTitles={character.films}/>}
-                <h4 onClick={e => toggleRides(!ridesVisible)}>Rides: </h4>
-                {ridesVisible && <Vehicles rides={rides}/>}
+                <h3 onClick={e => toggleRides(!ridesVisible)}>Rides: </h3>
+                {ridesVisible && <Vehicles starships={starships} vehicles={vehicles}/>}
             </InfoCard>
         </CharacterCard>
     )
