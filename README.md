@@ -30,11 +30,20 @@ Be prepared to demonstrate your understanding of this week's concepts by answeri
 
 1. What is React JS and what problems does it solve? Support your answer with concepts introduced in class and from your personal research on the web.
 
+React is a javascript library that allows developrs to more easily manipulate the DOM by providing syntatical sugar that appears much like html (JSX) and allow the handling of state data to update the DOM automatically on the client side when a state variable changes.  With React, developers can dispense with cumbersome DOM manipulation functions and code simple, readable html components.  React also meets the demands of modern users who are much more interactive with web applications such as facebook.  Only small parts of a webpage need to 'react' to a state change without having to re-render the entire page.
+
 1. Describe component state.
+
+A component state is much like a variable in a function in that it is created within the component.  Unlike a variable, however, it cannot be changed directly but must be overwritten by the function that accompanies it during state creation.  The reason for this is react cannot know the change has happened unless you use the provided function.
 
 1. Describe props.
 
+Props, short for properties, are variables that are passed down to components much like an argument.  "props" is actually an object a component receives from its parent component which sets they keys and values of the props object similar in syntax to html attributes.  
+
 1. What are side effects, and how do you sync effects in a React component to changes of certain state or props?
+
+side effects are sections of code that are run when the component renders.  Unfortunately, they will run repeatedly as they trigger another render.  To make the side effect run only once, you must pass an empty array as an argument.  To sync the component with changes to a state or prop, include the variable in that array.  
+
 
 You are expected to be able to answer questions in these areas. Your responses contribute to your Sprint Challenge grade.
 
