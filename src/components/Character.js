@@ -7,9 +7,10 @@ import styled from 'styled-components'
 
 
 
-const Character = ({ character }) => {
-    const { name, homeworld, birth_year } = character
-
+const Character = ({ character, movies}) => {
+    const { name, homeworld, birth_year, starships, vehicles } = character
+    
+    // Retreive Home World name
     const [homeWorld, setHomeWorld] = useState('A Galaxy Far, Far Away')
     useEffect(() => {
         axios.get(homeworld)
@@ -19,6 +20,26 @@ const Character = ({ character }) => {
             .catch(err => console.log("Home World Error:", err))
     }, [homeworld])
 
+    // Retrieve starships and vehicles objects
+    const [rides, setRides] = useState([])
+    
+    useEffect(() => {
+        let promises = [];
+        let ridePromises = [];
+        [...vehicles, ...starships].forEach(ride => {
+            promises.push(
+                axios.get(ride)
+                    .then(res => {
+                        console.log(character.name, res.data.name)
+                        ridePromises.push(res.data.name)
+                    })
+                    .catch(err => console.log("Could not get rides", err))
+            )
+        })
+
+        Promise.all(promises).then(() => setRides(ridePromises))
+    }, [starships, vehicles])
+
     return (
         <div>
             <h3>{name}</h3>
@@ -27,8 +48,9 @@ const Character = ({ character }) => {
             <p>Calls {homeWorld} home</p>
 
             <h4>Appears in: </h4>
-
+            <Movies movies={movies} movieTitles={character.films}/>
             <h4>Rides: </h4>
+            <Vehicles rides={rides}/>
         </div>
     )
 }
@@ -47,7 +69,6 @@ export default Character
 // height: "172"
 // homeworld: "http://swapi.dev/api/planets/1/"
 // mass: "77"
-// name: "Luke Skywalker"
 // skin_color: "fair"
 // species: []
 // starships: (2) ["http://swapi.dev/api/starships/12/", "http://swapi.dev/api/starships/22/"]

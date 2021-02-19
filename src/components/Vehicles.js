@@ -1,9 +1,13 @@
 import React from 'react'
 
-const Vehicles = () => {
+const Vehicles = ({ rides }) => {
     return (
         <div>
-            
+            {
+                rides.map(ride => (
+                    <p key={ride}>{ride}</p>
+                ))
+            }
         </div>
     )
 }
