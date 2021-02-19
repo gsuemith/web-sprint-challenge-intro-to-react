@@ -20,24 +20,34 @@ const Character = ({ character, movies}) => {
             .catch(err => console.log("Home World Error:", err))
     }, [homeworld])
 
-    // Retrieve starships and vehicles objects
+    // Retrieve starship and vehicle names
     const [rides, setRides] = useState([])
-    
-    useEffect(() => {
-        let promises = [];
-        let ridePromises = [];
-        [...vehicles, ...starships].forEach(ride => {
-            promises.push(
-                axios.get(ride)
-                    .then(res => {
-                        console.log(character.name, res.data.name)
-                        ridePromises.push(res.data.name)
-                    })
-                    .catch(err => console.log("Could not get rides", err))
-            )
-        })
+    // Collects multiple promises for each ride url
+    // useEffect(() => {
+    //     let promises = [];
+    //     let ridePromises = [];
+    //     [...vehicles, ...starships].forEach(ride => {
+    //         promises.push(
+    //             axios.get(ride)
+    //                 .then(res => {
+    //                     console.log(character.name, res.data.name)
+    //                     ridePromises.push(res.data.name)
+    //                 })
+    //                 .catch(err => console.log("Could not get rides", err))
+    //         )
+    //     })
 
-        Promise.all(promises).then(() => setRides(ridePromises))
+    //     // Change state once all promises provided
+    //     Promise.all(promises).then(() => setRides(ridePromises))
+    // }, [starships, vehicles])
+
+    useEffect(() => {
+        let ridePromises = [];
+        Promise.all(
+            [...starships, ...vehicles].map(ride => (
+                axios.get(ride).then(res => ridePromises.push(res.data.name))
+            ))
+        ).then(() => setRides(ridePromises))
     }, [starships, vehicles])
 
     return (
