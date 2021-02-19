@@ -56,10 +56,17 @@ const Character = ({ character, movies}) => {
 
     return (
         <CharacterCard>
+            {/* Clicking closes bio if all are open, opens all if not */}
             <h2 onClick={e => {
-                toggleBio(true);
-                toggleMovies(true);
-                toggleRides(true);
+                if (bioVisible && moviesVisible && ridesVisible){
+                    toggleBio(false);
+                    toggleMovies(false);
+                    toggleRides(false);
+                } else {
+                    toggleBio(true);
+                    toggleMovies(true);
+                    toggleRides(true);
+                }
             }}>
                 {name}
             </h2>
