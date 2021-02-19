@@ -5,6 +5,32 @@ import Movies from './Movies'
 import Vehicles from './Vehicles'
 import styled from 'styled-components'
 
+const CharacterCard = styled.div`
+    color: white;
+    background: rgba(0,0,0,.7);
+    width: 350px;
+    margin: 1em;
+    padding: 2em;
+    transition: .6s ease-in-out;
+
+    &:hover {
+        margin: 0;
+        padding: 3em;
+    }
+
+    & h4 {
+        cursor: pointer;
+        padding: 1em;
+        transition: .4s ease-in-out;
+    }
+    
+    & h4:hover {
+        background: black;
+    }
+`
+const InfoCard = styled.div`
+    margin: 0;
+`
 
 
 const Character = ({ character, movies}) => {
@@ -22,46 +48,46 @@ const Character = ({ character, movies}) => {
 
     // Retrieve starship and vehicle names
     const [rides, setRides] = useState([])
-    // Collects multiple promises for each ride url
-    // useEffect(() => {
-    //     let promises = [];
-    //     let ridePromises = [];
-    //     [...vehicles, ...starships].forEach(ride => {
-    //         promises.push(
-    //             axios.get(ride)
-    //                 .then(res => {
-    //                     console.log(character.name, res.data.name)
-    //                     ridePromises.push(res.data.name)
-    //                 })
-    //                 .catch(err => console.log("Could not get rides", err))
-    //         )
-    //     })
-
-    //     // Change state once all promises provided
-    //     Promise.all(promises).then(() => setRides(ridePromises))
-    // }, [starships, vehicles])
-
     useEffect(() => {
         let ridePromises = [];
+        // Collect multiple promises for each ride url
         Promise.all(
             [...starships, ...vehicles].map(ride => (
-                axios.get(ride).then(res => ridePromises.push(res.data.name))
+                axios.get(ride)
+                .then(res => (
+                    ridePromises.push(res.data.name)
+                ))
+                .catch(err => (
+                    console.log("Unable to retrieve ride", err)
+                ))
             ))
-        ).then(() => setRides(ridePromises))
+        ) // Once complete, update state
+        .then(() => setRides(ridePromises))
     }, [starships, vehicles])
 
-    return (
-        <div>
-            <h3>{name}</h3>
-            <h4>Bio:</h4>
-            <p>Born in {birth_year}</p>
-            <p>Calls {homeWorld} home</p>
+    // Section visibility
+    const [moviesVisible, toggleMovies] = useState(false)
+    const [ridesVisible, toggleRides] = useState(false)
+    const [bioVisible, toggleBio] = useState(false)
 
-            <h4>Appears in: </h4>
-            <Movies movies={movies} movieTitles={character.films}/>
-            <h4>Rides: </h4>
-            <Vehicles rides={rides}/>
-        </div>
+    return (
+        <CharacterCard>
+            <h2>{name}</h2>
+            <InfoCard>
+                <h4 onClick={e => toggleBio(!bioVisible)}>Bio:</h4>
+                {
+                    bioVisible && <div className="Bio">
+                        <p>Born in <strong>{birth_year}</strong></p>
+                        <p>Calls <strong>{homeWorld}</strong> home</p>
+                    </div>
+                }
+
+                <h4 onClick={e => toggleMovies(!moviesVisible)}>Appears in: </h4>
+                {moviesVisible && <Movies movies={movies} movieTitles={character.films}/>}
+                <h4 onClick={e => toggleRides(!ridesVisible)}>Rides: </h4>
+                {ridesVisible && <Vehicles rides={rides}/>}
+            </InfoCard>
+        </CharacterCard>
     )
 }
 

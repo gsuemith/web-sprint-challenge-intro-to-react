@@ -40,7 +40,7 @@ const App = () => {
 
   return (
     <div className="App">
-      <h1 className="Header">Characters</h1>
+      <h1 className="Header" style={{width: '100%', textAlign: 'center'}}>Characters</h1>
       
       {
         characters.map((character, index) => {
